@@ -1,0 +1,10 @@
+{
+  "name": "logging2file",
+  "version": "1.0.0",
+  "description": "Logging to file synchronized.",
+  "repository": {
+    "private": true
+  },
+  "main": "index.js",
+  "license": "ISC"
+}
