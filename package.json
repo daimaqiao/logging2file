@@ -1,10 +1,14 @@
 {
   "name": "logging2file",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Logging to file synchronized.",
   "repository": {
-    "private": true
+    "type": "git",
+    "url": "https://github.com/daimaqiao/logging2file.git"
   },
   "main": "index.js",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@pm2/io": "^4.3.3"
+  }
 }

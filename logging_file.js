@@ -11,6 +11,10 @@ class LoggingFile {
 		}
 	}
 
+	getFilePath() {
+		return this.filePath;
+	}
+
 	reloadLog(filePath) {
 		const lastLogger = this.fsLogger;
 		this.fsLogger = null;
@@ -23,6 +27,14 @@ class LoggingFile {
 		if (this.filePath) {
 			this.fsLogger = fs.openSync(this.filePath, 'a');
 		}
+	}
+
+	reloadLogOnPm2Action() {
+		const pm2Action = require('./pm2_action');
+		pm2Action.onAction('reloadLoggingFile', () => {
+			console.log(`Triggered pm2 action reload log ${ this.getFilePath() }`);
+			this.reloadLog();
+		});
 	}
 
 	getLevel() {
@@ -65,6 +77,10 @@ class LoggingFile {
 			out = args.map((a) => a.toString()).join(' ');
 		}
 		this.writeLine(`${ new Date().toLocaleString() } - ${ prefix } ${ out }`);
+	}
+
+	log(...args) {
+		this._writeArgs('LOG:', args);
 	}
 
 	debug(...args) {
