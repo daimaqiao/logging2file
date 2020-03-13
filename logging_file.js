@@ -1,21 +1,27 @@
 const fs = require('fs');
 
 class LoggingFile {
-	constructor(filePath) {
+	constructor(filePath, openFlags) {
 		this.fsLogger = null;
 		this.filePath = filePath;
 		this._allLevels = ['debug', 'info', 'warn', 'error', 'none'];
 		this.setLevel('info');
 		if (filePath) {
-			this.fsLogger = fs.openSync(filePath, 'a');
+			this.fsLogger = fs.openSync(filePath, openFlags ? openFlags : 'a');
 		}
+	}
+
+	newLine(text) {
+		return this._isNothing(text) ?
+			LoggingFile.NEWLINE :
+			`${ text }${ LoggingFile.NEWLINE }`;
 	}
 
 	getFilePath() {
 		return this.filePath;
 	}
 
-	reloadLog(filePath) {
+	reloadLog(filePath, openFlags) {
 		const lastLogger = this.fsLogger;
 		this.fsLogger = null;
 		if (lastLogger) {
@@ -25,7 +31,7 @@ class LoggingFile {
 			this.filePath = filePath;
 		}
 		if (this.filePath) {
-			this.fsLogger = fs.openSync(this.filePath, 'a');
+			this.fsLogger = fs.openSync(this.filePath, openFlags ? openFlags : 'a');
 		}
 	}
 
@@ -60,23 +66,47 @@ class LoggingFile {
 
 	writeLine(text) {
 		if (this.fsLogger) {
-			fs.writeSync(this.fsLogger, `${ text }\r\n`);
+			fs.writeSync(this.fsLogger, this.newLine(text));
 		}
 	}
 
+	_isNothing(arg) {
+		return arg === null || arg === undefined;
+	}
+
+	_isNotNothing(arg) {
+		return arg !== null && arg !== undefined;
+	}
+
+
+	_textOf(arg, nothing = '') {
+		return this._isNothing() ? nothing : `${ arg }`
+	}
+
+	_joinArgs(args, separator = ' ') {
+		if (args instanceof Array) {
+			const out = args.filter((a) => this._isNotNothing(a))
+				.map((a) => a.toString())
+				.join(separator);
+			return out;
+		}
+		return this._textOf(args, '');
+	}
+
 	_writeArgs(prefix, args) {
-		let out = '';
-		if (args) {
-			if (args.lehgth > 0) {
-				out = args.map((a) => a.toString()).join(' ');
-			} else {
-				out = args.toString();
-			}
-		}
-		if (args && args.length > 0) {
-			out = args.map((a) => a.toString()).join(' ');
-		}
+		let out = this._joinArgs(args, ' ');
 		this.writeLine(`${ new Date().toLocaleString() } - ${ prefix } ${ out }`);
+	}
+
+	log2(prefix, ...args) {
+	    if (args.length === 0)  {
+			this.writeLine(`${ new Date().toLocaleString() } - ${ prefix }`);
+		} else if(this._isNothing(prefix)) {
+			let out = this._joinArgs(args, ' ');
+			this.writeLine(`${ new Date().toLocaleString() } - ${ out }`);
+		} else {
+	    	this._writeArgs(prefix, args);
+		}
 	}
 
 	log(...args) {
@@ -107,4 +137,5 @@ class LoggingFile {
 		}
 	}
 }// class
+LoggingFile.NEWLINE = '\r\n';
 module.exports = LoggingFile;

@@ -8,6 +8,14 @@ function createLogger(filePath, logLevel) {
 	return logger;
 }
 
-module.exports = {
-	createLogger,
-};
+function createLoggerWithFlags(filePath, openFlags, logLevel) {
+	const logger = openFlags ?
+		new LoggingFile(filePath, openFlags) :
+		new LoggingFile(filePath);
+	if (logLevel) {
+		logger.setLevel(logLevel);
+	}
+	return logger;
+}
+
+module.exports = { createLogger, createLoggerWithFlags };
