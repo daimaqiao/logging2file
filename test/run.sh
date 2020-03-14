@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
+set -e
+
 cd `dirname $0`
-if [ ! -s node_modules/DONE ]; then
-	npm install
-	date +%Y-%m-%dT%H:%M:%S%z > node_modules/DONE
+test -e node_modules/logging2file || npm install
+MOCHA=`which mocha || true`
+if [ -z $MOCHA ]; then
+	npm install -g mocha
+	MOCHA=`which mocha`
 fi
-MOCHA=`which mocha`
-[ -z $MOCHA ] && npm install -g mocha
 $MOCHA index.js
+

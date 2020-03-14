@@ -8,8 +8,10 @@
   },
   "license": "ISC",
   "dependencies": {
-    "logging2file": "file:logging2file",
     "minimist": "^1.2.5",
     "mocha": "^7.1.0"
+  },
+  "scripts": {
+    "postinstall": "test -e node_modules/logging2file || ln -s ../.. node_modules/logging2file"
   }
 }

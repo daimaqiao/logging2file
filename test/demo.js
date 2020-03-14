@@ -1,14 +1,3 @@
-# logging2file
-Logging to file synchronized.
-
-
-- install
-```bash
-npm install --save logging2file
-```
-
-- demo
-```javascript
 const filePath = '/tmp/logging2file.log'
 // create logging file: /tmp/logging2file.log
 const logger = require('logging2file').createLogger(filePath);
@@ -37,15 +26,4 @@ require('child_process').exec(`cat ${ filePath }`, (err, out) => {
 	if (err) { console.error(err); }
 	if (out) { console.log(out); }
 });
-```
 
-- Reload logging file with pm2-trigger-action  
-(LoggingFile method: reloadLogOnPm2Action)
-```bash
-pm2 trigger <id> action reloadLoggingFile [ <message> ]
-```
-- Truncate logging file with pm2-trigger-action  
-(LoggingFile methods: truncateLogOnPm2Action)
-```bash
-pm2 trigger <id> action truncateLoggingFile [ <message> ]
-```
