@@ -1,0 +1,14 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "Tests of logging2file",
+  "main": "index.js",
+  "repository": {
+    "private": true
+  },
+  "license": "ISC",
+  "dependencies": {
+    "logging2file": "file:..",
+    "mocha": "^7.1.0"
+  }
+}

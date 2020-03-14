@@ -21,12 +21,20 @@ class LoggingFile {
 		return this.filePath;
 	}
 
-	reloadLog(filePath, openFlags) {
+	isLogging() {
+	    return !!this.fsLogger;
+	}
+
+	closeLog() {
 		const lastLogger = this.fsLogger;
 		this.fsLogger = null;
 		if (lastLogger) {
 			fs.closeSync(lastLogger);
 		}
+    }
+
+	reopenLog(filePath, openFlags) {
+	    this.closeLog();
 		if (filePath) {
 			this.filePath = filePath;
 		}
@@ -35,11 +43,29 @@ class LoggingFile {
 		}
 	}
 
+	reloadLog(filePath, openFlag = 'a') {
+		this.reopenLog(filePath, openFlag);
+	}
+
+	truncateLog(filePath, openFlag = 'w') {
+		this.reopenLog(filePath, openFlag);
+	}
+
+	onPm2Action(action, callback/* (error, param) */) {
+		require('./pm2_action').onAction(action, callback);
+	}
+
 	reloadLogOnPm2Action() {
-		const pm2Action = require('./pm2_action');
-		pm2Action.onAction('reloadLoggingFile', () => {
-			console.log(`Triggered pm2 action reload log ${ this.getFilePath() }`);
+		this.onPm2Action('reloadLoggingFile', () => {
+			console.warn(`Triggered pm2 action reload logging file ${ this.getFilePath() }`);
 			this.reloadLog();
+		});
+	}
+
+	truncateLogOnPm2Action() {
+		this.onPm2Action('truncateLoggingFile', () => {
+			console.warn(`Triggered pm2 action truncate logging file ${ this.getFilePath() }`);
+			this.truncateLog();
 		});
 	}
 

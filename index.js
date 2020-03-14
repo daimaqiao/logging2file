@@ -1,7 +1,15 @@
 const LoggingFile = require('./logging_file');
 
 function createLogger(filePath, logLevel) {
-	const logger = new LoggingFile(filePath);
+	const logger = new LoggingFile(filePath, 'a');
+	if (logLevel) {
+		logger.setLevel(logLevel);
+	}
+	return logger;
+}
+
+function createLoggerAndTruncate(filePath, logLevel) {
+	const logger = new LoggingFile(filePath, 'w');
 	if (logLevel) {
 		logger.setLevel(logLevel);
 	}
@@ -9,13 +17,15 @@ function createLogger(filePath, logLevel) {
 }
 
 function createLoggerWithFlags(filePath, openFlags, logLevel) {
-	const logger = openFlags ?
-		new LoggingFile(filePath, openFlags) :
-		new LoggingFile(filePath);
+	const logger = new LoggingFile(filePath, openFlags);
 	if (logLevel) {
 		logger.setLevel(logLevel);
 	}
 	return logger;
 }
 
-module.exports = { createLogger, createLoggerWithFlags };
+module.exports = {
+	createLogger,
+	createLoggerAndTruncate,
+	createLoggerWithFlags
+};
