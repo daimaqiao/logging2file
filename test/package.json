@@ -8,7 +8,8 @@
   },
   "license": "ISC",
   "dependencies": {
-    "logging2file": "file:..",
+    "logging2file": "file:logging2file",
+    "minimist": "^1.2.5",
     "mocha": "^7.1.0"
   }
 }
