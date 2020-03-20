@@ -12,8 +12,14 @@ function _filePath() {
 }
 function _verify(filePath, lastMsg, prefix) {
 	const text = fs.readFileSync(filePath).toString();
+	console.log('_verify:', text.trim());
 	const msg = `${ prefix ? prefix : '' } ${ lastMsg }`;
 	return text.endsWith(logger.newLine(msg));
+}
+function _verifyRegexpr(filePath, regexp) {
+	const text = fs.readFileSync(filePath).toString();
+	console.log('_verify:', text.trim());
+	return regexp.test(text);
 }
 function _unlink(filePath) {
 	fs.unlink(filePath, () => {});
@@ -61,6 +67,20 @@ describe('Test logging methods', function() {
 		mylog.log2(prefix, msg);
 		mylog.debug('no debug');
 		assert.ok(_verify(filePath, msg, prefix), prefix);
+		_unlink(filePath);
+		done();
+	});
+
+	it('check debug format', function(done) {
+		const filePath = _filePath();
+		const now = new Date();
+		const msg = `check debug format (time=${ now.getTime() })`;
+		const prefix = 'DEBUG:';
+		const mylog = log.createLoggerAndTruncate(filePath, 'debug');
+		const regexpr= /^\d{4,}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} .?\d{2}:\d{2} - DEBUG: .*/;
+		mylog.setTimeFormat('YYYY-MM-DD HH:mm:ss.SSS Z'); // e.g. 2020-03-20 10:31:14.849 +08:00
+		mylog.debug(msg);
+		assert.ok(_verifyRegexpr(filePath, regexpr), 'bad debug format');
 		_unlink(filePath);
 		done();
 	});

@@ -1,7 +1,9 @@
 const fs = require('fs');
+const moment = require('moment');
 
 class LoggingFile {
 	constructor(filePath, openFlags) {
+		this.timeFormat = '';
 		this.fsLogger = null;
 		this.filePath = filePath;
 		this._allLevels = ['debug', 'info', 'warn', 'error', 'none'];
@@ -9,6 +11,15 @@ class LoggingFile {
 		if (filePath) {
 			this.fsLogger = fs.openSync(filePath, openFlags ? openFlags : 'a');
 		}
+	}
+
+	getTimeFormat() {
+		return this.timeFormat;
+	}
+
+	setTimeFormat(format) {
+		this.timeFormat = this._isNothing(format) ?
+			'' : format;
 	}
 
 	newLine(text) {
@@ -119,17 +130,24 @@ class LoggingFile {
 		return this._textOf(args, '');
 	}
 
+	formatTime(time) {
+		if (this._isNothing(time)) {
+		    return moment().format(this.getTimeFormat());
+		}
+		return moment(time).format(this.getTimeFormat());
+	}
+
 	_writeArgs(prefix, args) {
 		let out = this._joinArgs(args, ' ');
-		this.writeLine(`${ new Date().toLocaleString() } - ${ prefix } ${ out }`);
+		this.writeLine(`${ this.formatTime() } - ${ prefix } ${ out }`);
 	}
 
 	log2(prefix, ...args) {
 	    if (args.length === 0)  {
-			this.writeLine(`${ new Date().toLocaleString() } - ${ prefix }`);
+			this.writeLine(`${ this.formatTime() } - ${ prefix }`);
 		} else if(this._isNothing(prefix)) {
 			let out = this._joinArgs(args, ' ');
-			this.writeLine(`${ new Date().toLocaleString() } - ${ out }`);
+			this.writeLine(`${ this.formatTime() } - ${ out }`);
 		} else {
 	    	this._writeArgs(prefix, args);
 		}

@@ -1,6 +1,6 @@
 {
   "name": "logging2file",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Logging to file synchronized.",
   "repository": {
     "type": "git",
@@ -9,7 +9,8 @@
   "main": "index.js",
   "license": "ISC",
   "dependencies": {
-    "@pm2/io": "^4.3.3"
+    "@pm2/io": "^4.3.3",
+    "moment": "^2.24.0"
   },
   "files": [
     "README.md",

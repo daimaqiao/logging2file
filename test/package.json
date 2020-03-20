@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Tests of logging2file",
   "main": "index.js",
   "repository": {
