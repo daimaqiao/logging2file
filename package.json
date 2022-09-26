@@ -9,7 +9,7 @@
   "main": "index.js",
   "license": "ISC",
   "dependencies": {
-    "@pm2/io": "^4.3.3",
+    "@pm2/io": "^5.0.0",
     "moment": "^2.24.0"
   },
   "files": [
